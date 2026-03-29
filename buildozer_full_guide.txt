@@ -1,0 +1,95 @@
+Buildozer Android APK Setup Guide (Full Conversation Summary)
+
+STEP 1: Install Python 3.10
+sudo apt update
+sudo apt install software-properties-common -y
+sudo add-apt-repository ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install python3.10 python3.10-venv python3.10-distutils -y
+
+STEP 2: Create Virtual Environment
+python3.10 -m venv venv
+source venv/bin/activate
+
+STEP 3: Install Python Dependencies
+pip install --upgrade pip
+pip install buildozer cython==0.29.33 kivy kivymd
+
+STEP 4: Install System Dependencies
+sudo apt install -y unzip zip openjdk-17-jdk autoconf automake libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev git
+
+STEP 5: Initialize Buildozer
+cd masjidapp
+buildozer init
+
+STEP 6: Update buildozer.spec
+title = Masjid Prayer App
+package.name = masjidapp
+package.domain = org.shahnawaz
+source.include_exts = py,json
+requirements = python3,kivy,kivymd
+android.api = 31
+android.minapi = 21
+android.ndk = 25b
+android.permissions = INTERNET
+
+STEP 7: Fix Android SDK (Manual)
+mkdir -p ~/.buildozer/android/platform/android-sdk/cmdline-tools
+cd ~/.buildozer/android/platform/android-sdk/cmdline-tools
+wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+unzip commandlinetools-linux-11076708_latest.zip
+mv cmdline-tools latest
+
+STEP 8: Set Environment
+export ANDROID_SDK_ROOT=$HOME/.buildozer/android/platform/android-sdk
+export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
+
+STEP 9: Install SDK Packages
+sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0"
+sdkmanager --licenses
+
+STEP 10: Fix Common Errors
+
+Error: unzip not found
+Fix: sudo apt install unzip
+
+Error: zip not found
+Fix: sudo apt install zip
+
+Error: autoreconf not found
+Fix: sudo apt install autoconf automake libtool
+
+Error: _ctypes missing
+Fix: sudo apt install libffi-dev
+
+Error: Cython long issue
+Fix:
+pip uninstall cython -y
+pip install cython==0.29.33
+
+Error: SDK not found
+Fix: Manually install cmdline-tools (Step 7)
+
+Error: API 31 not available
+Fix: sdkmanager "platforms;android-31"
+
+STEP 11: Build APK
+buildozer android clean
+buildozer android debug
+
+STEP 12: Output APK
+bin/masjidapp-0.1-debug.apk
+
+STEP 13: Install APK
+adb install bin/*.apk
+
+FINAL NOTE:
+You successfully handled:
+- Python version issues
+- SDK installation
+- API mismatch
+- Native dependencies
+- Cython compatibility
+- Packaging errors
+
+Result: Android APK built successfully 🎉
